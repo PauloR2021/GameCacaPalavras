@@ -30,6 +30,7 @@ public class JogoCacaPalavrasView extends JFrame {
     }
 
     public void montarInterface() {
+        dicas = new JLabel();
         atualizarDicas();
         add(dicas,BorderLayout.NORTH);
         int TAM = gradePalavras.getTamanho();
@@ -70,7 +71,6 @@ public class JogoCacaPalavrasView extends JFrame {
         JScrollPane scroll = new JScrollPane(tabela);
         add(scroll, BorderLayout.CENTER);
 
-        JLabel dicas = new JLabel("Palavras: " + String.join(", ", gradePalavras.getPalavras()));
         dicas.setFont(new Font("Arial", Font.PLAIN, 16));
         add(dicas, BorderLayout.NORTH);
 
@@ -92,7 +92,9 @@ public class JogoCacaPalavrasView extends JFrame {
             if(gradePalavras.getPalavrasRestantes().contains(palavra)) {
                 sb.append(palavra).append(", ");
             }else{
-                sb.append("<strike>").append(palavra).append("</strike>").append(", ");
+                sb.append("<span style='text-decoration: line-through; font color: red;'>")
+                        .append(palavra)
+                        .append("</span>, ");
             }
         }
 
@@ -107,6 +109,8 @@ public class JogoCacaPalavrasView extends JFrame {
 
         }else{
             dicas.setText(sb.toString());
+            dicas.revalidate();
+            dicas.repaint();
         }
     }
 
