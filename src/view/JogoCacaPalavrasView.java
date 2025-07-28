@@ -10,10 +10,11 @@ import java.awt.event.MouseEvent;
 
 public class JogoCacaPalavrasView extends JFrame {
 
-    private GradeDePalavras gradePalavras;
+    private final GradeDePalavras gradePalavras;
     private JTable tabela;
     private DefaultTableCellRenderer[][] renderers;
     private Point pontoInicial, pontoFinal;
+    private JLabel dicas;
 
     public JogoCacaPalavrasView() {
         setTitle("Caça-Palavras de Jogadores de Basquete");
@@ -29,6 +30,8 @@ public class JogoCacaPalavrasView extends JFrame {
     }
 
     public void montarInterface() {
+        atualizarDicas();
+        add(dicas,BorderLayout.NORTH);
         int TAM = gradePalavras.getTamanho();
         String[] colunas = new String[TAM];
         for (int i = 0; i < TAM; i++) colunas[i] = String.valueOf(i + 1);
@@ -83,6 +86,30 @@ public class JogoCacaPalavrasView extends JFrame {
         });
     }
 
+    private void atualizarDicas() {
+        StringBuilder sb = new StringBuilder("<html>Palavras: ");
+        for(String palavra : gradePalavras.getPalavras()) {
+            if(gradePalavras.getPalavrasRestantes().contains(palavra)) {
+                sb.append(palavra).append(", ");
+            }else{
+                sb.append("<strike>").append(palavra).append("</strike>").append(", ");
+            }
+        }
+
+        if(sb.lastIndexOf(", ") != -1){
+            sb.setLength(sb.length() - 2);
+        }
+        sb.append("</html>");
+
+        if(dicas == null) {
+            dicas = new JLabel(sb.toString());
+            dicas.setFont(new Font("Arial", Font.PLAIN, 16));
+
+        }else{
+            dicas.setText(sb.toString());
+        }
+    }
+
     private void processarSelecao() {
         int linhaIni = tabela.rowAtPoint(pontoInicial);
         int colIni = tabela.columnAtPoint(pontoInicial);
@@ -120,6 +147,7 @@ public class JogoCacaPalavrasView extends JFrame {
                 }
             }
             gradePalavras.removerPalavra(palavraSelecionada);
+            atualizarDicas();
             tabela.repaint();
             JOptionPane.showMessageDialog(this, "Palavra encontrada: " + palavraSelecionada);
 
